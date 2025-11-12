@@ -71,11 +71,17 @@ IntraChat is a modern, secure, and extensible real-time web chat platform built 
 
 ## Configuration
 
-### Environment Variables (Recommended)
-Set these in the Replit Secrets panel or .env file:
-- `DISCORD_WEBHOOK_URL` - Discord webhook for admin notifications (optional)
+### Environment Variables
+Set these in the Replit Secrets panel:
+
+**REQUIRED:**
+- `FLASK_SECRET_KEY` - **MANDATORY** secret key for Flask sessions. The application will refuse to start without this. Generate one with: `python -c 'import secrets; print(secrets.token_hex(32))'`
+
+**Optional:**
+- `DISCORD_WEBHOOK_URL` - Discord webhook for admin notifications
 - `SERVER_ID` - Server identifier for Discord logs (default: "default_server")
-- `TENOR_API_KEY` - Tenor API key for GIF search (optional)
+- `TENOR_API_KEY` - Tenor API key for GIF search functionality
+- `FLASK_DEBUG` - Set to "true" to enable debug mode (default: false, NOT recommended for production)
 
 ### config.json (Fallback)
 If environment variables are not set, the app will fall back to config.json:

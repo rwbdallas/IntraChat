@@ -61,7 +61,17 @@ def format_uptime(seconds):
 start_time = datetime.now()
 
 app = Flask(__name__)
-app.secret_key = 'secret_key'
+
+# Require secret key for security - fail fast if not set
+secret_key = os.getenv('FLASK_SECRET_KEY')
+if not secret_key:
+    raise RuntimeError(
+        "FLASK_SECRET_KEY environment variable is required for security. "
+        "Generate a strong secret key and set it in Replit Secrets. "
+        "Example: python -c 'import secrets; print(secrets.token_hex(32))'"
+    )
+app.secret_key = secret_key
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://intrachat_server:IntraChat123!@localhost/intrachat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -838,4 +848,5 @@ def inject_api_details():
 
 if __name__ == '__main__':
     threading.Thread(target=hourly_broadcast, daemon=True).start()
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    socketio.run(app, host='0.0.0.0', port=5000, debug=debug_mode)
