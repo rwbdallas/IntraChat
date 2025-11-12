@@ -15,16 +15,16 @@ import threading
 import requests
 import json
 
-# Load config
-with open("config.json", "r") as config_file:
-    config = json.load(config_file)
+# Load config from environment variables with fallback to config.json
+try:
+    with open("config.json", "r") as config_file:
+        config = json.load(config_file)
+except FileNotFoundError:
+    config = {}
 
-DISCORD_WEBHOOK_URL = config.get("discord_webhook_url")
-server_id = config.get("server_id")
-TENOR_API_KEY = config.get("tenor_api_key")
-DISCORD_WEBHOOK_URL = config.get("discord_webhook_url")
-
-server_id = server_id or "default_server"
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL", config.get("discord_webhook_url", ""))
+server_id = os.getenv("SERVER_ID", config.get("server_id", "default_server"))
+TENOR_API_KEY = os.getenv("TENOR_API_KEY", config.get("tenor_api_key", ""))
 
 def log_to_discord(message):
     try:
